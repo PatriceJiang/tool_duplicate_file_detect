@@ -46,7 +46,7 @@ function walk(folder: string, filter:(file:string)=>boolean, eachcb:(err:Error, 
         console.log("walk: progress \t"+ (Math.floor(p * 100 / total)) + "% (" +p + "/" + total+")");
     }, 500);
 
-    async.eachOfLimit(all_files, 200, (v, idx, cb)=>{
+    async.eachOfLimit(all_files, 30, (v, idx, cb)=>{
             p+=1;
             eachcb(null, v, cb);
         }, (err)=>{

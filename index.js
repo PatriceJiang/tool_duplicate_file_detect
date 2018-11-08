@@ -43,7 +43,7 @@ function walk(folder, filter, eachcb, donecb) {
         //console.log("walk: progress "+ p + "/" + total);
         console.log("walk: progress \t" + (Math.floor(p * 100 / total)) + "% (" + p + "/" + total + ")");
     }, 500);
-    async.eachOfLimit(all_files, 200, function (v, idx, cb) {
+    async.eachOfLimit(all_files, 30, function (v, idx, cb) {
         p += 1;
         eachcb(null, v, cb);
     }, function (err) {

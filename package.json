@@ -1,0 +1,14 @@
+{
+  "name": "identical_files",
+  "version": "1.0.0",
+  "description": "list duplicate files in target folder",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "PT",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.6.1"
+  }
+}

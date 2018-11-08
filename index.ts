@@ -11,16 +11,24 @@ function walk(folder: string, filter:(file:string)=>boolean, eachcb:(err:Error, 
     let all_files:string[] = [];
     //sync list
     let do_walk = function(file:string){
-        let stat = fs.statSync(file);
-        if(stat.isDirectory()) {
-            walk_folder(file);
-        } else{
-            walk_file(file);
+        try{
+            let stat = fs.statSync(file);
+            if(stat.isDirectory()) {
+                walk_folder(file);
+            } else{
+                walk_file(file, stat);
+            }
+        }catch(e){
+            console.error(e);
         }
     };
 
-    let walk_file = function(file:string) { 
+    let walk_file = function(file:string, stat:fs.Stats) { 
         if(filter(file)){
+            if(stat.size > 1024 *1024 * 60) {
+                console.error("file too large ",Math.floor( stat.size / 1024/1024) + "M", file);
+                return;
+            }
             all_files.push(file);
         }
     }
@@ -35,7 +43,7 @@ function walk(folder: string, filter:(file:string)=>boolean, eachcb:(err:Error, 
     console.log("walk: processing "+total + " files");
     let task = setInterval(()=>{
         //console.log("walk: progress "+ p + "/" + total);
-        console.log("walk: progress "+ (Math.floor(p * 100 / total)) + "%");
+        console.log("walk: progress \t"+ (Math.floor(p * 100 / total)) + "% (" +p + "/" + total+")");
     }, 500);
 
     async.eachOfLimit(all_files, 200, (v, idx, cb)=>{

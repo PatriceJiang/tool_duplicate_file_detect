@@ -9,16 +9,25 @@ function walk(folder, filter, eachcb, donecb) {
     var all_files = [];
     //sync list
     var do_walk = function (file) {
-        var stat = fs.statSync(file);
-        if (stat.isDirectory()) {
-            walk_folder(file);
+        try {
+            var stat = fs.statSync(file);
+            if (stat.isDirectory()) {
+                walk_folder(file);
+            }
+            else {
+                walk_file(file, stat);
+            }
         }
-        else {
-            walk_file(file);
+        catch (e) {
+            console.error(e);
         }
     };
-    var walk_file = function (file) {
+    var walk_file = function (file, stat) {
         if (filter(file)) {
+            if (stat.size > 1024 * 1024 * 60) {
+                console.error("file too large ", Math.floor(stat.size / 1024 / 1024) + "M", file);
+                return;
+            }
             all_files.push(file);
         }
     };
@@ -32,7 +41,7 @@ function walk(folder, filter, eachcb, donecb) {
     console.log("walk: processing " + total + " files");
     var task = setInterval(function () {
         //console.log("walk: progress "+ p + "/" + total);
-        console.log("walk: progress " + (Math.floor(p * 100 / total)) + "%");
+        console.log("walk: progress \t" + (Math.floor(p * 100 / total)) + "% (" + p + "/" + total + ")");
     }, 500);
     async.eachOfLimit(all_files, 200, function (v, idx, cb) {
         p += 1;

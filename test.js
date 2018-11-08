@@ -21,7 +21,16 @@ function find_oldest(files) {
     
 }
 
-fdup.list_duplicates("E:/Github/cocos2d-x/", (f)=>{return true;}, (err, dup)=>{
+function filter(x)
+{
+    let fn = x.toLowerCase();
+    if(fn.endsWith(".jpg") || fn.endsWith(".cr2") || fn.endsWith(".png")){
+        return true;
+    }
+    return false;
+}
+
+fdup.list_duplicates("F:/", filter, (err, dup)=>{
     dup.forEach(list=>{
         //console.log("duplicate ", list);
         find_oldest(list);
